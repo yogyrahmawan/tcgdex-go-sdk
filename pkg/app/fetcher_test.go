@@ -17,7 +17,7 @@ func TestFetchSingleCardOK(t *testing.T) {
 		assert.NoError(t, err)
 	}()
 
-	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en/cards")
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
 	card, err := f.FetchSingleCard("swsh3-136")
 	assert.NoError(t, err)
 	assert.Equal(t, "swsh3-136", card.ID)
@@ -32,7 +32,7 @@ func TestFetchSingleCardNotFound(t *testing.T) {
 		assert.NoError(t, err)
 	}()
 
-	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en/cards")
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
 	card, err := f.FetchSingleCard("swsh3")
 	assert.Nil(t, card)
 	assert.Error(t, err)
@@ -46,7 +46,7 @@ func TestSearchCardsByNameNotFound(t *testing.T) {
 		assert.NoError(t, err)
 	}()
 
-	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en/cards")
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
 	cards, err := f.SearchCards(model.CardQueryOptions{
 		Name: "pokemon",
 	})
@@ -62,7 +62,7 @@ func TestSearchCardsByNameFound(t *testing.T) {
 		assert.NoError(t, err)
 	}()
 
-	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en/cards")
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
 	cards, err := f.SearchCards(model.CardQueryOptions{
 		Name: "pikachu",
 	})
@@ -78,7 +78,7 @@ func TestSearchCardsByIdFound(t *testing.T) {
 		assert.NoError(t, err)
 	}()
 
-	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en/cards")
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
 	cards, err := f.SearchCards(model.CardQueryOptions{
 		Id: "xyp-XY124",
 	})
@@ -94,7 +94,7 @@ func TestSearchCardsByLocalIdFound(t *testing.T) {
 		assert.NoError(t, err)
 	}()
 
-	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en/cards")
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
 	cards, err := f.SearchCards(model.CardQueryOptions{
 		LocalId: "XY124",
 	})
@@ -110,7 +110,7 @@ func TestSearchCardsUsingPagination(t *testing.T) {
 		assert.NoError(t, err)
 	}()
 
-	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en/cards")
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
 	cards, err := f.SearchCards(model.CardQueryOptions{
 		Name:                   "pikachu",
 		PaginationPage:         1,
@@ -118,4 +118,34 @@ func TestSearchCardsUsingPagination(t *testing.T) {
 	})
 	assert.NoError(t, err)
 	assert.Len(t, cards, 2)
+}
+
+func TestGetSetsFound(t *testing.T) {
+	r, err := recorder.New("fixtures/get_sets_found")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	sets, err := f.GetSets("swsh1")
+	assert.NoError(t, err)
+	assert.Equal(t, "swsh1", sets.ID)
+	assert.Equal(t, 216, sets.CardCount.Total)
+	assert.Equal(t, "Sword & Shield", sets.Name)
+}
+
+func TestGetSetsNotFound(t *testing.T) {
+	r, err := recorder.New("fixtures/get_sets_not_found")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	sets, err := f.GetSets("notfound")
+	assert.Error(t, err)
+	assert.Nil(t, sets)
 }
