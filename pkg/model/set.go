@@ -36,3 +36,18 @@ type Serie struct {
 type Abbreviation struct {
 	Official string `json:"official"`
 }
+
+type SetQueryOptions struct {
+	Id                     string `url:"id,omitempty"`
+	Name                   string `url:"name,omitempty"`
+	PaginationPage         int    `url:"pagination:page,omitempty"`
+	PaginationItemsPerPage int    `url:"pagination:itemsPerPage,omitempty"`
+}
+
+type SetBrief struct {
+	ID        string    `json:"id"`
+	Name      string    `json:"name"`
+	Logo      string    `json:"logo"`
+	Symbol    string    `json:"symbol"`
+	CardCount CardCount `json:"cardCount"`
+}
