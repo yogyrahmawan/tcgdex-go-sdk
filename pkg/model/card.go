@@ -12,7 +12,7 @@ type Card struct {
 	Variants       CardVariants   `json:"variants"`
 	Hp             int            `json:"hp"`
 	Types          []string       `json:"types"`
-	EvolvesFrom    string         `json:"evolvesFrom"`
+	EvolveFrom     string         `json:"evolveFrom"`
 	Description    string         `json:"description"`
 	Stage          string         `json:"stage"`
 	Attacks        []CardAttack   `json:"attacks"`
