@@ -15,6 +15,7 @@ import (
 type Fetcheable interface {
 	FetchSingleCard(cardID string) (*model.Card, error)
 	SearchCards(options model.CardQueryOptions) ([]model.CardBrief, error)
+	GetSets(setID string) (*model.Set, error)
 }
 
 type fetcher struct {
@@ -36,7 +37,7 @@ func NewFetcher(client *http.Client, httpClientTimeout time.Duration, baseURL st
 }
 
 func (f *fetcher) FetchSingleCard(cardID string) (*model.Card, error) {
-	url, err := url.Parse(f.baseURL + "/" + cardID)
+	url, err := url.Parse(f.baseURL + "/cards/" + cardID)
 	if err != nil {
 		return nil, fmt.Errorf("parse fetch single card: %w", err)
 	}
@@ -70,7 +71,7 @@ func (f *fetcher) SearchCards(options model.CardQueryOptions) ([]model.CardBrief
 		return nil, fmt.Errorf("values: %w", err)
 	}
 
-	url, err := url.Parse(f.baseURL + "?" + queryStrings.Encode())
+	url, err := url.Parse(f.baseURL + "/cards?" + queryStrings.Encode())
 	if err != nil {
 		return nil, fmt.Errorf("parse fetch single card: %w", err)
 	}
@@ -96,4 +97,33 @@ func (f *fetcher) SearchCards(options model.CardQueryOptions) ([]model.CardBrief
 	}
 
 	return cardBriefs, nil
+}
+
+func (f *fetcher) GetSets(setID string) (*model.Set, error) {
+	url, err := url.Parse(f.baseURL + "/sets/" + setID)
+	if err != nil {
+		return nil, fmt.Errorf("parse fetch get sets: %w", err)
+	}
+
+	httpResp, err := f.httpClient.Get(url.String())
+	if err != nil {
+		return nil, fmt.Errorf("get sets: %w", err)
+	}
+
+	if httpResp.StatusCode != http.StatusOK {
+		var httpErr model.TcgdexHttpError
+
+		if err = json.NewDecoder(httpResp.Body).Decode(&httpResp); err != nil {
+			return nil, fmt.Errorf("decode get sets error response: %w", err)
+		}
+
+		return nil, errors.New(httpErr.String())
+	}
+
+	var set model.Set
+	if err = json.NewDecoder(httpResp.Body).Decode(&set); err != nil {
+		return nil, fmt.Errorf("decode get sets: %w", err)
+	}
+
+	return &set, nil
 }

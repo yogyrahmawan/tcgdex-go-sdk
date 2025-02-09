@@ -43,24 +43,6 @@ type CardWeakness struct {
 	Value string `json:"value"`
 }
 
-type Legal struct {
-	Standard bool `json:"standard"`
-	Expanded bool `json:"expanded"`
-}
-
-type Set struct {
-	CardCount CardCount `json:"cardCount"`
-	ID        string    `json:"id"`
-	Logo      string    `json:"logo"`
-	Name      string    `json:"name"`
-	Symbol    string    `json:"symbol"`
-}
-
-type CardCount struct {
-	Official int `json:"official"`
-	Total    int `json:"total"`
-}
-
 type CardVariants struct {
 	FirstEdition bool `json:"firstEdition"`
 	Holo         bool `json:"holo"`
