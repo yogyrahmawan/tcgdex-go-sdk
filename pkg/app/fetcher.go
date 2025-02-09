@@ -8,11 +8,13 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/google/go-querystring/query"
 	"github.com/yogyrahmawan/tcgdex-go-sdk/pkg/model"
 )
 
 type Fetcheable interface {
 	FetchSingleCard(cardID string) (*model.Card, error)
+	SearchCards(options model.CardQueryOptions) ([]model.CardBrief, error)
 }
 
 type fetcher struct {
@@ -60,4 +62,38 @@ func (f *fetcher) FetchSingleCard(cardID string) (*model.Card, error) {
 	}
 
 	return &card, nil
+}
+
+func (f *fetcher) SearchCards(options model.CardQueryOptions) ([]model.CardBrief, error) {
+	queryStrings, err := query.Values(options)
+	if err != nil {
+		return nil, fmt.Errorf("values: %w", err)
+	}
+
+	url, err := url.Parse(f.baseURL + "?" + queryStrings.Encode())
+	if err != nil {
+		return nil, fmt.Errorf("parse fetch single card: %w", err)
+	}
+
+	httpResp, err := f.httpClient.Get(url.String())
+	if err != nil {
+		return nil, fmt.Errorf("get single card: %w", err)
+	}
+
+	if httpResp.StatusCode != http.StatusOK {
+		var httpErr model.TcgdexHttpError
+
+		if err = json.NewDecoder(httpResp.Body).Decode(&httpResp); err != nil {
+			return nil, fmt.Errorf("decode fetch search cards error response: %w", err)
+		}
+
+		return nil, errors.New(httpErr.String())
+	}
+
+	var cardBriefs []model.CardBrief
+	if err = json.NewDecoder(httpResp.Body).Decode(&cardBriefs); err != nil {
+		return nil, fmt.Errorf("decode fetch search cards: %w", err)
+	}
+
+	return cardBriefs, nil
 }

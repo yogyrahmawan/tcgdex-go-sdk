@@ -79,3 +79,18 @@ type CardAbility struct {
 	Name   string `json:"name"`
 	Effect string `json:"effect"`
 }
+
+type CardQueryOptions struct {
+	Id                     string `url:"id,omitempty"`
+	LocalId                string `url:"localId,omitempty"`
+	Name                   string `url:"name,omitempty"`
+	PaginationPage         int    `url:"pagination:page,omitempty"`
+	PaginationItemsPerPage int    `url:"pagination:itemsPerPage,omitempty"`
+}
+
+type CardBrief struct {
+	ID      string `json:"id"`
+	LocalID string `json:"localId"`
+	Name    string `json:"name"`
+	Image   string `json:"image"`
+}
