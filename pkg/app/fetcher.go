@@ -17,6 +17,7 @@ type Fetcheable interface {
 	SearchCards(options model.CardQueryOptions) ([]model.CardBrief, error)
 	GetSets(setID string) (*model.Set, error)
 	SearchSets(options model.SetQueryOptions) ([]model.SetBrief, error)
+	GetCardBySetAndLocalId(setID, localID string) (*model.Card, error)
 }
 
 type fetcher struct {
@@ -161,4 +162,33 @@ func (f *fetcher) SearchSets(options model.SetQueryOptions) ([]model.SetBrief, e
 	}
 
 	return setBriefs, nil
+}
+
+func (f *fetcher) GetCardBySetAndLocalId(setID, localID string) (*model.Card, error) {
+	url, err := url.Parse(f.baseURL + "/sets/" + setID + "/" + localID)
+	if err != nil {
+		return nil, fmt.Errorf("parse fetch get card by set and localId: %w", err)
+	}
+
+	httpResp, err := f.httpClient.Get(url.String())
+	if err != nil {
+		return nil, fmt.Errorf("get card by set and localId: %w", err)
+	}
+
+	if httpResp.StatusCode != http.StatusOK {
+		var httpErr model.TcgdexHttpError
+
+		if err = json.NewDecoder(httpResp.Body).Decode(&httpResp); err != nil {
+			return nil, fmt.Errorf("decode get card by set and localId error response: %w", err)
+		}
+
+		return nil, errors.New(httpErr.String())
+	}
+
+	var card model.Card
+	if err = json.NewDecoder(httpResp.Body).Decode(&card); err != nil {
+		return nil, fmt.Errorf("decode get card by set and localId: %w", err)
+	}
+
+	return &card, nil
 }

@@ -214,3 +214,32 @@ func TestSearchSetsUsingPagination(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, cards, 2)
 }
+
+func TestFetchSingleCardBySetAndLocalIdOK(t *testing.T) {
+	r, err := recorder.New("fixtures/fetch_single_card_by_setid_and_local_idstatus_ok")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	card, err := f.GetCardBySetAndLocalId("swsh3", "136")
+	assert.NoError(t, err)
+	assert.Equal(t, "swsh3-136", card.ID)
+	assert.Equal(t, "Pokemon", card.Category)
+}
+
+func TestFetchSingleCardBySetAndLocalIdNotFound(t *testing.T) {
+	r, err := recorder.New("fixtures/fetch_single_card_by_setid_and_local_id_status_not_found")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	card, err := f.GetCardBySetAndLocalId("swsh3111", "32")
+	assert.Nil(t, card)
+	assert.Error(t, err)
+}
