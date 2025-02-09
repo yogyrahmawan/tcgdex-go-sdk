@@ -1,0 +1,54 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.tcgdex.net
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers: {}
+        url: https://api.tcgdex.net/v2/en/cards?id=xyp-XY124
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 110
+        uncompressed: false
+        body: '[{"id":"xyp-XY124","localId":"XY124","name":"Pikachu EX","image":"https://assets.tcgdex.net/en/xy/xyp/XY124"}]'
+        headers:
+            Access-Control-Allow-Headers:
+                - DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range
+            Access-Control-Allow-Methods:
+                - GET,POST,OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - Content-Length,Content-Range
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, must-revalidate
+            Content-Length:
+                - "110"
+            Content-Type:
+                - application/json; charset=utf-8
+            Date:
+                - Sun, 09 Feb 2025 15:45:30 GMT
+            Etag:
+                - W/"6e-yLAY12PwGZqtx1rkUmguyuReuvI"
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 824.019458ms
