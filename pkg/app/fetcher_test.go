@@ -149,3 +149,68 @@ func TestGetSetsNotFound(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, sets)
 }
+
+func TestSearchSetsByNameNotFound(t *testing.T) {
+	r, err := recorder.New("fixtures/fetch_search_sets_by_name_not_found")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	sets, err := f.SearchSets(model.SetQueryOptions{
+		Name: "pokemon",
+	})
+	assert.NoError(t, err)
+	assert.Len(t, sets, 0)
+}
+
+func TestSearchSetsByNameFound(t *testing.T) {
+	r, err := recorder.New("fixtures/fetch_search_sets_by_name_found")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	sets, err := f.SearchCards(model.CardQueryOptions{
+		Name: "Jungle",
+	})
+	assert.NoError(t, err)
+	assert.Len(t, sets, 1)
+}
+
+func TestSearchSetsByIdFound(t *testing.T) {
+	r, err := recorder.New("fixtures/fetch_search_sets_by_id_found")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	sets, err := f.SearchSets(model.SetQueryOptions{
+		Id: "base2",
+	})
+	assert.NoError(t, err)
+	assert.Len(t, sets, 1)
+}
+
+func TestSearchSetsUsingPagination(t *testing.T) {
+	r, err := recorder.New("fixtures/fetch_search_sets_using_pagination")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	cards, err := f.SearchCards(model.CardQueryOptions{
+		PaginationPage:         1,
+		PaginationItemsPerPage: 2,
+	})
+	assert.NoError(t, err)
+	assert.Len(t, cards, 2)
+}
