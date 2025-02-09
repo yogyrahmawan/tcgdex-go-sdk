@@ -39,7 +39,7 @@ func (f *fetcher) FetchSingleCard(cardID string) (*model.Card, error) {
 		return nil, fmt.Errorf("parse fetch single card: %w", err)
 	}
 
-	httpResp, err := http.Get(url.String())
+	httpResp, err := f.httpClient.Get(url.String())
 	if err != nil {
 		return nil, fmt.Errorf("get single card: %w", err)
 	}
