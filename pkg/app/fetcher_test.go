@@ -353,3 +353,17 @@ func TestSearchSeriesUsingPagination(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, series, 2)
 }
+
+func TestListCardTypes(t *testing.T) {
+	r, err := recorder.New("fixtures/list_card_types")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	cardTypes, err := f.ListCardTypes()
+	assert.NoError(t, err)
+	assert.Len(t, cardTypes, 11)
+}

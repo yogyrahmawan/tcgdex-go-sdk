@@ -20,6 +20,7 @@ type Fetcheable interface {
 	GetCardBySetAndLocalId(setID, localID string) (*model.Card, error)
 	GetSingleSerie(serieID string) (*model.Serie, error)
 	SearchSeries(options model.SerieQueryOptions) ([]model.SerieBrief, error)
+	ListCardTypes() ([]string, error)
 }
 
 type fetcher struct {
@@ -256,4 +257,33 @@ func (f *fetcher) SearchSeries(options model.SerieQueryOptions) ([]model.SerieBr
 	}
 
 	return serieBriefs, nil
+}
+
+func (f *fetcher) ListCardTypes() ([]string, error) {
+	url, err := url.Parse(f.baseURL + "/types")
+	if err != nil {
+		return nil, fmt.Errorf("parse list card types: %w", err)
+	}
+
+	httpResp, err := f.httpClient.Get(url.String())
+	if err != nil {
+		return nil, fmt.Errorf("list card types: %w", err)
+	}
+
+	if httpResp.StatusCode != http.StatusOK {
+		var httpErr model.TcgdexHttpError
+
+		if err = json.NewDecoder(httpResp.Body).Decode(&httpResp); err != nil {
+			return nil, fmt.Errorf("decode list card types response: %w", err)
+		}
+
+		return nil, errors.New(httpErr.String())
+	}
+
+	var cardTypes []string
+	if err = json.NewDecoder(httpResp.Body).Decode(&cardTypes); err != nil {
+		return nil, fmt.Errorf("decode list card types: %w", err)
+	}
+
+	return cardTypes, nil
 }
