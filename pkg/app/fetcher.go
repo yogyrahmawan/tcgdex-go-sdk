@@ -19,6 +19,7 @@ type Fetcheable interface {
 	SearchSets(options model.SetQueryOptions) ([]model.SetBrief, error)
 	GetCardBySetAndLocalId(setID, localID string) (*model.Card, error)
 	GetSingleSerie(serieID string) (*model.Serie, error)
+	SearchSeries(options model.SerieQueryOptions) ([]model.SerieBrief, error)
 }
 
 type fetcher struct {
@@ -221,4 +222,38 @@ func (f *fetcher) GetSingleSerie(serieID string) (*model.Serie, error) {
 	}
 
 	return &serie, nil
+}
+
+func (f *fetcher) SearchSeries(options model.SerieQueryOptions) ([]model.SerieBrief, error) {
+	queryStrings, err := query.Values(options)
+	if err != nil {
+		return nil, fmt.Errorf("values: %w", err)
+	}
+
+	url, err := url.Parse(f.baseURL + "/series?" + queryStrings.Encode())
+	if err != nil {
+		return nil, fmt.Errorf("parse search series: %w", err)
+	}
+
+	httpResp, err := f.httpClient.Get(url.String())
+	if err != nil {
+		return nil, fmt.Errorf("search series: %w", err)
+	}
+
+	if httpResp.StatusCode != http.StatusOK {
+		var httpErr model.TcgdexHttpError
+
+		if err = json.NewDecoder(httpResp.Body).Decode(&httpResp); err != nil {
+			return nil, fmt.Errorf("decode search series error response: %w", err)
+		}
+
+		return nil, errors.New(httpErr.String())
+	}
+
+	var serieBriefs []model.SerieBrief
+	if err = json.NewDecoder(httpResp.Body).Decode(&serieBriefs); err != nil {
+		return nil, fmt.Errorf("decode search series: %w", err)
+	}
+
+	return serieBriefs, nil
 }

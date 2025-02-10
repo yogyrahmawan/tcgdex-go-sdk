@@ -15,7 +15,7 @@ interactions:
         body: ""
         form: {}
         headers: {}
-        url: https://api.tcgdex.net/v2/en/sets?name=Jungle
+        url: https://api.tcgdex.net/v2/en/series?id=neo
         method: GET
       response:
         proto: HTTP/2.0
@@ -23,9 +23,9 @@ interactions:
         proto_minor: 0
         transfer_encoding: []
         trailer: {}
-        content_length: 185
+        content_length: 79
         uncompressed: false
-        body: '[{"id":"base2","name":"Jungle","logo":"https://assets.tcgdex.net/en/base/base2/logo","symbol":"https://assets.tcgdex.net/univ/base/base2/symbol","cardCount":{"total":64,"official":64}}]'
+        body: '[{"id":"neo","name":"Neo","logo":"https://assets.tcgdex.net/en/neo/neo1/logo"}]'
         headers:
             Access-Control-Allow-Headers:
                 - DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range
@@ -40,15 +40,15 @@ interactions:
             Cache-Control:
                 - no-cache, no-store, must-revalidate
             Content-Length:
-                - "185"
+                - "79"
             Content-Type:
                 - application/json; charset=utf-8
             Date:
-                - Mon, 10 Feb 2025 04:24:48 GMT
+                - Mon, 10 Feb 2025 04:21:09 GMT
             Etag:
-                - W/"b9-8NguWaguPGD36mENaw5ny1VNFwA"
+                - W/"4f-C+3HlH9hqNX2DF1omvARBB13kPQ"
             X-Powered-By:
                 - Express
         status: 200 OK
         code: 200
-        duration: 822.436166ms
+        duration: 579.772417ms
