@@ -1,6 +1,6 @@
 module github.com/yogyrahmawan/tcgdex-go-sdk
 
-go 1.23.5
+go 1.23
 
 require (
 	github.com/google/go-querystring v1.1.0
