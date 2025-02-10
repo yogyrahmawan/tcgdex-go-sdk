@@ -21,6 +21,7 @@ type Fetcheable interface {
 	GetSingleSerie(serieID string) (*model.Serie, error)
 	SearchSeries(options model.SerieQueryOptions) ([]model.SerieBrief, error)
 	ListCardTypes() ([]string, error)
+	ListCardRetreatCosts() ([]int, error)
 }
 
 type fetcher struct {
@@ -286,4 +287,33 @@ func (f *fetcher) ListCardTypes() ([]string, error) {
 	}
 
 	return cardTypes, nil
+}
+
+func (f *fetcher) ListCardRetreatCosts() ([]int, error) {
+	url, err := url.Parse(f.baseURL + "/retreats")
+	if err != nil {
+		return nil, fmt.Errorf("parse list card retreat costs: %w", err)
+	}
+
+	httpResp, err := f.httpClient.Get(url.String())
+	if err != nil {
+		return nil, fmt.Errorf("list card retreat costs: %w", err)
+	}
+
+	if httpResp.StatusCode != http.StatusOK {
+		var httpErr model.TcgdexHttpError
+
+		if err = json.NewDecoder(httpResp.Body).Decode(&httpResp); err != nil {
+			return nil, fmt.Errorf("decode list card retreat costs response: %w", err)
+		}
+
+		return nil, errors.New(httpErr.String())
+	}
+
+	var cardRetreatCosts []int
+	if err = json.NewDecoder(httpResp.Body).Decode(&cardRetreatCosts); err != nil {
+		return nil, fmt.Errorf("decode list card retreat costs: %w", err)
+	}
+
+	return cardRetreatCosts, nil
 }

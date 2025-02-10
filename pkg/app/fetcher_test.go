@@ -367,3 +367,17 @@ func TestListCardTypes(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, cardTypes, 11)
 }
+
+func TestListCardRetreatCosts(t *testing.T) {
+	r, err := recorder.New("fixtures/list_card_retreat_costs")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	cardTypes, err := f.ListCardRetreatCosts()
+	assert.NoError(t, err)
+	assert.Len(t, cardTypes, 5)
+}
