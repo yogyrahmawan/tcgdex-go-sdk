@@ -243,3 +243,32 @@ func TestFetchSingleCardBySetAndLocalIdNotFound(t *testing.T) {
 	assert.Nil(t, card)
 	assert.Error(t, err)
 }
+
+func TestGetSerieFound(t *testing.T) {
+	r, err := recorder.New("fixtures/get_serie_found")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	serie, err := f.GetSingleSerie("swsh")
+	assert.NoError(t, err)
+	assert.Equal(t, "swsh", serie.ID)
+	assert.Len(t, serie.Sets, 19)
+}
+
+func TestGetSerieNotFound(t *testing.T) {
+	r, err := recorder.New("fixtures/get_serie_not_found")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	serie, err := f.GetSingleSerie("notfound")
+	assert.Error(t, err)
+	assert.Nil(t, serie)
+}

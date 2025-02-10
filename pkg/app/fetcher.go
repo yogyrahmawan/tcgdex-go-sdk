@@ -18,6 +18,7 @@ type Fetcheable interface {
 	GetSets(setID string) (*model.Set, error)
 	SearchSets(options model.SetQueryOptions) ([]model.SetBrief, error)
 	GetCardBySetAndLocalId(setID, localID string) (*model.Card, error)
+	GetSingleSerie(serieID string) (*model.Serie, error)
 }
 
 type fetcher struct {
@@ -191,4 +192,33 @@ func (f *fetcher) GetCardBySetAndLocalId(setID, localID string) (*model.Card, er
 	}
 
 	return &card, nil
+}
+
+func (f *fetcher) GetSingleSerie(serieID string) (*model.Serie, error) {
+	url, err := url.Parse(f.baseURL + "/series/" + serieID)
+	if err != nil {
+		return nil, fmt.Errorf("parse get single serie: %w", err)
+	}
+
+	httpResp, err := f.httpClient.Get(url.String())
+	if err != nil {
+		return nil, fmt.Errorf("get single serie: %w", err)
+	}
+
+	if httpResp.StatusCode != http.StatusOK {
+		var httpErr model.TcgdexHttpError
+
+		if err = json.NewDecoder(httpResp.Body).Decode(&httpResp); err != nil {
+			return nil, fmt.Errorf("decode get single serie error response: %w", err)
+		}
+
+		return nil, errors.New(httpErr.String())
+	}
+
+	var serie model.Serie
+	if err = json.NewDecoder(httpResp.Body).Decode(&serie); err != nil {
+		return nil, fmt.Errorf("decode get single serie: %w", err)
+	}
+
+	return &serie, nil
 }
