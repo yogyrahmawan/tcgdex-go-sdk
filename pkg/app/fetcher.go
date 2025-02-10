@@ -23,6 +23,7 @@ type Fetcheable interface {
 	ListCardTypes() ([]string, error)
 	ListCardRetreatCosts() ([]int, error)
 	ListCardRarities() ([]string, error)
+	ListCardIllustrators() ([]string, error)
 }
 
 type fetcher struct {
@@ -346,4 +347,33 @@ func (f *fetcher) ListCardRarities() ([]string, error) {
 	}
 
 	return cardRarities, nil
+}
+
+func (f *fetcher) ListCardIllustrators() ([]string, error) {
+	url, err := url.Parse(f.baseURL + "/illustrators")
+	if err != nil {
+		return nil, fmt.Errorf("parse list card illustrators: %w", err)
+	}
+
+	httpResp, err := f.httpClient.Get(url.String())
+	if err != nil {
+		return nil, fmt.Errorf("list card illustrators: %w", err)
+	}
+
+	if httpResp.StatusCode != http.StatusOK {
+		var httpErr model.TcgdexHttpError
+
+		if err = json.NewDecoder(httpResp.Body).Decode(&httpResp); err != nil {
+			return nil, fmt.Errorf("decode list card illustrators response: %w", err)
+		}
+
+		return nil, errors.New(httpErr.String())
+	}
+
+	var cardIllustrators []string
+	if err = json.NewDecoder(httpResp.Body).Decode(&cardIllustrators); err != nil {
+		return nil, fmt.Errorf("decode list card illustrators: %w", err)
+	}
+
+	return cardIllustrators, nil
 }
