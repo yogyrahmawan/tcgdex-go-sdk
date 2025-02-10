@@ -28,11 +28,6 @@ type Legal struct {
 	Expanded bool `json:"expanded"`
 }
 
-type Serie struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
-
 type Abbreviation struct {
 	Official string `json:"official"`
 }
