@@ -1,0 +1,54 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.tcgdex.net
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers: {}
+        url: https://api.tcgdex.net/v2/en/categories
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 30
+        uncompressed: false
+        body: '["Energy","Pokemon","Trainer"]'
+        headers:
+            Access-Control-Allow-Headers:
+                - DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range
+            Access-Control-Allow-Methods:
+                - GET,POST,OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - Content-Length,Content-Range
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, must-revalidate
+            Content-Length:
+                - "30"
+            Content-Type:
+                - application/json; charset=utf-8
+            Date:
+                - Mon, 10 Feb 2025 15:25:20 GMT
+            Etag:
+                - W/"1e-MzHWwHpJZ56hGlPUH7Qm1PkqgjQ"
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 1.10851625s
