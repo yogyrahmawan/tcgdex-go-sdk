@@ -175,7 +175,7 @@ func TestSearchSetsByNameFound(t *testing.T) {
 	}()
 
 	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
-	sets, err := f.SearchCards(model.CardQueryOptions{
+	sets, err := f.SearchSets(model.SetQueryOptions{
 		Name: "Jungle",
 	})
 	assert.NoError(t, err)
@@ -271,4 +271,85 @@ func TestGetSerieNotFound(t *testing.T) {
 	serie, err := f.GetSingleSerie("notfound")
 	assert.Error(t, err)
 	assert.Nil(t, serie)
+}
+
+func TestSearchSetsByIdNotFound(t *testing.T) {
+	r, err := recorder.New("fixtures/fetch_search_series_by_id_not_found")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	series, err := f.SearchSeries(model.SerieQueryOptions{
+		Id: "abc",
+	})
+	assert.NoError(t, err)
+	assert.Len(t, series, 0)
+}
+
+func TestSearchSeriesByIdFound(t *testing.T) {
+	r, err := recorder.New("fixtures/fetch_search_series_by_id_found")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	series, err := f.SearchSeries(model.SerieQueryOptions{
+		Id: "neo",
+	})
+	assert.NoError(t, err)
+	assert.Len(t, series, 1)
+}
+
+func TestSearchSeriesByNameNotFound(t *testing.T) {
+	r, err := recorder.New("fixtures/fetch_search_series_by_name_not_found")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	series, err := f.SearchSeries(model.SerieQueryOptions{
+		Name: "notfound",
+	})
+	assert.NoError(t, err)
+	assert.Len(t, series, 0)
+}
+
+func TestSearchSeriesByNameFound(t *testing.T) {
+	r, err := recorder.New("fixtures/fetch_search_series_by_name_found")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	series, err := f.SearchSeries(model.SerieQueryOptions{
+		Name: "Neo",
+	})
+	assert.NoError(t, err)
+	assert.Len(t, series, 2)
+}
+
+func TestSearchSeriesUsingPagination(t *testing.T) {
+	r, err := recorder.New("fixtures/fetch_search_series_using_pagination")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	series, err := f.SearchSeries(model.SerieQueryOptions{
+		PaginationPage:         1,
+		PaginationItemsPerPage: 2,
+	})
+	assert.NoError(t, err)
+	assert.Len(t, series, 2)
 }
