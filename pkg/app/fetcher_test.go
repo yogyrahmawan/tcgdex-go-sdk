@@ -423,3 +423,45 @@ func TestListCardCategories(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, cardCategories, 3)
 }
+
+func TestListPokemonStages(t *testing.T) {
+	r, err := recorder.New("fixtures/list_pokemon_stages")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	pokemonStages, err := f.ListPokemonStages()
+	assert.NoError(t, err)
+	assert.Len(t, pokemonStages, 10)
+}
+
+func TestSuffixes(t *testing.T) {
+	r, err := recorder.New("fixtures/list_suffixes")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	pokemonStages, err := f.ListSuffixes()
+	assert.NoError(t, err)
+	assert.Len(t, pokemonStages, 7)
+}
+
+func TestListVariants(t *testing.T) {
+	r, err := recorder.New("fixtures/list_variants")
+	assert.NoError(t, err)
+	defer func() {
+		err := r.Stop()
+		assert.NoError(t, err)
+	}()
+
+	f := NewFetcher(r.GetDefaultClient(), 5*time.Second, "https://api.tcgdex.net/v2/en")
+	variants, err := f.ListVariants()
+	assert.NoError(t, err)
+	assert.Len(t, variants, 5)
+}
