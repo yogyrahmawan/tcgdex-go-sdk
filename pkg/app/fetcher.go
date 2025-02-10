@@ -22,6 +22,7 @@ type Fetcheable interface {
 	SearchSeries(options model.SerieQueryOptions) ([]model.SerieBrief, error)
 	ListCardTypes() ([]string, error)
 	ListCardRetreatCosts() ([]int, error)
+	ListCardRarities() ([]string, error)
 }
 
 type fetcher struct {
@@ -316,4 +317,33 @@ func (f *fetcher) ListCardRetreatCosts() ([]int, error) {
 	}
 
 	return cardRetreatCosts, nil
+}
+
+func (f *fetcher) ListCardRarities() ([]string, error) {
+	url, err := url.Parse(f.baseURL + "/rarities")
+	if err != nil {
+		return nil, fmt.Errorf("parse list card rarities: %w", err)
+	}
+
+	httpResp, err := f.httpClient.Get(url.String())
+	if err != nil {
+		return nil, fmt.Errorf("list card rarities: %w", err)
+	}
+
+	if httpResp.StatusCode != http.StatusOK {
+		var httpErr model.TcgdexHttpError
+
+		if err = json.NewDecoder(httpResp.Body).Decode(&httpResp); err != nil {
+			return nil, fmt.Errorf("decode list card rarities response: %w", err)
+		}
+
+		return nil, errors.New(httpErr.String())
+	}
+
+	var cardRarities []string
+	if err = json.NewDecoder(httpResp.Body).Decode(&cardRarities); err != nil {
+		return nil, fmt.Errorf("decode list card rarities: %w", err)
+	}
+
+	return cardRarities, nil
 }

@@ -1,0 +1,54 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: api.tcgdex.net
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers: {}
+        url: https://api.tcgdex.net/v2/en/rarities
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: 502
+        uncompressed: false
+        body: '["ACE SPEC Rare","Amazing Rare","Classic Collection","Common","Crown","Double rare","Four Diamond","Full Art Trainer","Holo Rare","Holo Rare V","Holo Rare VMAX","Holo Rare VSTAR","Hyper rare","Illustration rare","LEGEND","None","One Diamond","One Star","Radiant Rare","Rare","Rare Holo","Rare Holo LV.X","Rare PRIME","Secret Rare","Shiny Ultra Rare","Shiny rare","Shiny rare V","Shiny rare VMAX","Special illustration rare","Three Diamond","Three Star","Two Diamond","Two Star","Ultra Rare","Uncommon"]'
+        headers:
+            Access-Control-Allow-Headers:
+                - DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range
+            Access-Control-Allow-Methods:
+                - GET,POST,OPTIONS
+            Access-Control-Allow-Origin:
+                - '*'
+            Access-Control-Expose-Headers:
+                - Content-Length,Content-Range
+            Alt-Svc:
+                - h3=":443"; ma=2592000
+            Cache-Control:
+                - no-cache, no-store, must-revalidate
+            Content-Length:
+                - "502"
+            Content-Type:
+                - application/json; charset=utf-8
+            Date:
+                - Mon, 10 Feb 2025 15:15:18 GMT
+            Etag:
+                - W/"1f6-/k3ac3JOf30GynbTx8gjlVRcpPc"
+            X-Powered-By:
+                - Express
+        status: 200 OK
+        code: 200
+        duration: 936.416875ms
